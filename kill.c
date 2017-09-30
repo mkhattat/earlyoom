@@ -170,8 +170,12 @@ static void userspace_kill(DIR *procdir, int sig, int ignore_oom_score_adj)
 	fscanf(stat, "%*d %s", name);
 	fclose(stat);
 
-	if(sig != 0)
+	if(sig != 0) {
 		fprintf(stderr, "Killing process %d %s\n", victim_pid, name);
+        char message[10000];
+        snprintf(message, sizeof(message), "wall -n -t 1 \"LOW MEMORY! This process has been killed:\n %s \"", name);
+        system(message);
+    }
 
 	if(kill(victim_pid, sig) != 0)
 	{
